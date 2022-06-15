@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Country{
     String name;
-    List<City> local_cities;
+    List<City> localCities;
     Pair<Integer, Integer> lowLeftPoint;
     Pair<Integer, Integer> highRightPoint;
     public Country(String countryLine) {
@@ -36,11 +36,11 @@ public class Country{
         this.name = args[0];
         this.lowLeftPoint = new Pair<>(xl, yl);
         this.highRightPoint = new Pair<>(xh, yh);
-        this.local_cities = new LinkedList<>();
+        this.localCities = new LinkedList<>();
     }
     boolean isCompleted(){
         boolean result = true;
-        for (City city: local_cities) {
+        for (City city: localCities) {
             result = city.isCompleted() && result;
         }
         return result;

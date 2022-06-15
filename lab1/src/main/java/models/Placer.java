@@ -73,13 +73,13 @@ public class Placer {
                 for (int j = yl; j <= yh; j++){
                     Pair<Integer, Integer> cords = new Pair<>(xl,j);
                     Map<String, Long> coins = new HashMap<>();
-                    Map<String, Long> shared_coins = new HashMap<>();
+                    Map<String, Long> sharedCoins = new HashMap<>();
                     for (String name: names) {
                         coins.put(name, 0L);
-                        shared_coins.put(name, 0L);
+                        sharedCoins.put(name, 0L);
                     }
-                    City city = new City(country.name, cords, coins, shared_coins);
-                    country.local_cities.add(city);
+                    City city = new City(country.name, cords, coins, sharedCoins);
+                    country.localCities.add(city);
                     territory.put(cords, city);
                 }
             }
@@ -106,20 +106,20 @@ public class Placer {
 
     void spreadMoney(){
         for (Map.Entry<Pair<Integer, Integer>,City> entry:territory.entrySet()) {
-            City current_city = entry.getValue();
-            for (City neighbour: current_city.neighbours) {
+            City currentCity = entry.getValue();
+            for (City neighbour: currentCity.neighbours) {
                 for (String name :names) {
-                    Long sharedValue = current_city.coins.get(name)/ Constants.REPRESENTATIVE_PORTION_PER_COIN;
-                    neighbour.shared_coins.put(name, neighbour.shared_coins.get(name) + sharedValue);
-                    current_city.shared_coins.put(name, current_city.shared_coins.get(name) - sharedValue);
+                    Long sharedValue = currentCity.coins.get(name)/ Constants.REPRESENTATIVE_PORTION_PER_COIN;
+                    neighbour.sharedCoins.put(name, neighbour.sharedCoins.get(name) + sharedValue);
+                    currentCity.sharedCoins.put(name, currentCity.sharedCoins.get(name) - sharedValue);
                 }
             }
         }
         for (Map.Entry<Pair<Integer, Integer>,City> entry:territory.entrySet()) {
-            City current_city = entry.getValue();
+            City currentCity = entry.getValue();
             for (String name :names) {
-                current_city.coins.put(name, current_city.coins.get(name) + current_city.shared_coins.get(name));
-                current_city.shared_coins.put(name, 0L);
+                currentCity.coins.put(name, currentCity.coins.get(name) + currentCity.sharedCoins.get(name));
+                currentCity.sharedCoins.put(name, 0L);
             }
         }
     }

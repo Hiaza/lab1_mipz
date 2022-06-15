@@ -9,16 +9,16 @@ public class City {
     List<City> neighbours;
     String country;
     Map<String, Long> coins;
-    Map<String, Long> shared_coins;
+    Map<String, Long> sharedCoins;
     Pair<Integer, Integer> cords;
 
 
-    public City(String country, Pair<Integer, Integer> cords, Map<String, Long> coins, Map<String, Long> shared_coins) {
+    public City(String country, Pair<Integer, Integer> cords, Map<String, Long> coins, Map<String, Long> sharedCoins) {
         this.country = country;
         this.neighbours = new LinkedList<>();
         this.cords = cords;
         this.coins = coins;
-        this.shared_coins = shared_coins;
+        this.sharedCoins = sharedCoins;
         this.coins.put(this.country, Constants.INIT_COINS);
     }
 
