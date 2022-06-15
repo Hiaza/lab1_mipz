@@ -6,12 +6,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Placer {
-    private List<Country> countries;
-    private List<String> names;
-    private Map<Pair<Integer,Integer>,City> territory = new HashMap<>();
+    private final List<Country> countries;
+    private final List<String> names;
+    private final Map<Pair<Integer,Integer>,City> territory = new HashMap<>();
 
     public Placer(List<Country> countries) {
         this.countries = countries;
+        this.names = countries.stream().map(country -> country.name).collect(Collectors.toList());
         init();
     }
     void init(){
@@ -55,15 +56,13 @@ public class Placer {
 
     static <String,Integer extends Comparable<? super Integer>> SortedSet<Map.Entry<String, Integer>> entriesSortedByValuesAndKeys(Map<String,Integer> map) {
         SortedSet<Map.Entry<String, Integer>> sortedEntries = new TreeSet<>(
-                Comparator.comparing((Map.Entry<String, Integer> e) -> e.getValue()).thenComparing(e -> e.getKey().toString())
+                Map.Entry.<String, Integer>comparingByValue().thenComparing(e -> e.getKey().toString())
         );
         sortedEntries.addAll(map.entrySet());
         return sortedEntries;
     }
 
     void fillTerritory(){
-        this.names = countries.stream().map(country -> country.name).collect(Collectors.toList());
-
         for (Country country: countries) {
             int xl = country.lowLeftPoint.getValue0();
             int yl = country.lowLeftPoint.getValue1();
@@ -87,13 +86,13 @@ public class Placer {
         }
     }
     void fillNeighbours(){
-        for (Map.Entry temp:territory.entrySet()) {
-            Pair<Integer, Integer> pair = (Pair)temp.getKey();
-            City city = (City)temp.getValue();
+        for (Map.Entry<Pair<Integer, Integer>,City> entry:territory.entrySet()) {
+            Pair<Integer, Integer> pair = entry.getKey();
+            City city = entry.getValue();
             int x = pair.getValue0();
             int y = pair.getValue1();
             for (int i = -1; i <= 1; i+=2){
-                Pair cords = new Pair<>(x + i, y);
+                Pair<Integer, Integer> cords = new Pair<>(x + i, y);
                 if (territory.containsKey(cords)){
                     city.neighbours.add(territory.get(cords));
                 }
@@ -106,8 +105,8 @@ public class Placer {
     }
 
     void spreadMoney(){
-        for (Map.Entry entry:territory.entrySet()) {
-            City current_city = (City) entry.getValue();
+        for (Map.Entry<Pair<Integer, Integer>,City> entry:territory.entrySet()) {
+            City current_city = entry.getValue();
             for (City neighbour: current_city.neighbours) {
                 for (String name :names) {
                     Long sharedValue = current_city.coins.get(name)/ Constants.REPRESENTATIVE_PORTION_PER_COIN;
@@ -116,8 +115,8 @@ public class Placer {
                 }
             }
         }
-        for (Map.Entry entry:territory.entrySet()) {
-            City current_city = (City) entry.getValue();
+        for (Map.Entry<Pair<Integer, Integer>,City> entry:territory.entrySet()) {
+            City current_city = entry.getValue();
             for (String name :names) {
                 current_city.coins.put(name, current_city.coins.get(name) + current_city.shared_coins.get(name));
                 current_city.shared_coins.put(name, 0L);

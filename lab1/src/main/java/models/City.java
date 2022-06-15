@@ -24,8 +24,8 @@ public class City {
 
     boolean isCompleted(){
         boolean result = true;
-        for (Map.Entry entry: coins.entrySet()) {
-            if ((Long) entry.getValue() == 0) {
+        for (Map.Entry<String, Long> entry: coins.entrySet()) {
+            if (entry.getValue() == 0) {
                 result = false;
                 break;
             }
