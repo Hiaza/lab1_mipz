@@ -23,13 +23,6 @@ public class City {
     }
 
     boolean isCompleted(){
-        boolean result = true;
-        for (Map.Entry<String, Long> entry: coins.entrySet()) {
-            if (entry.getValue() == 0) {
-                result = false;
-                break;
-            }
-        }
-        return result;
+        return coins.values().stream().allMatch(value -> value > 0);
     }
 }

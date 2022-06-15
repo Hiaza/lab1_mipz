@@ -39,10 +39,6 @@ public class Country{
         this.localCities = new LinkedList<>();
     }
     boolean isCompleted(){
-        boolean result = true;
-        for (City city: localCities) {
-            result = city.isCompleted() && result;
-        }
-        return result;
+        return localCities.stream().allMatch(City::isCompleted);
     }
 }
