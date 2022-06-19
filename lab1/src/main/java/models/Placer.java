@@ -68,7 +68,6 @@ public class Placer {
             int yl = country.lowLeftPoint.getValue1();
             int xh = country.highRightPoint.getValue0();
             int yh = country.highRightPoint.getValue1();
-
             for (; xl <= xh; xl++){
                 for (int j = yl; j <= yh; j++){
                     Pair<Integer, Integer> cords = new Pair<>(xl,j);
@@ -79,8 +78,11 @@ public class Placer {
                         sharedCoins.put(name, 0L);
                     }
                     City city = new City(country.name, cords, coins, sharedCoins);
+                    if(territory.containsKey(cords))
+                        throw new IllegalArgumentException("Coordinates of " + country.name + " and "
+                                + territory.get(cords).country + " intersect with each others");
+                    else territory.put(cords, city);
                     country.localCities.add(city);
-                    territory.put(cords, city);
                 }
             }
         }
@@ -99,6 +101,13 @@ public class Placer {
                 cords = new Pair<>(x, y + i);
                 if (territory.containsKey(cords)){
                     city.neighbours.add(territory.get(cords));
+                }
+            }
+        }
+        if(countries.size()>1){
+            for (Country country:countries) {
+                if(!country.localCities.stream().map(x->x.neighbours).flatMap(x->x.stream()).anyMatch(x->!x.country.equals(country.name))){
+                    throw new IllegalArgumentException("Country " + country.name + " is not connected with others");
                 }
             }
         }
