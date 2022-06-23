@@ -32,11 +32,12 @@ public class Placer {
                 spreadMoney();
                 isCompleted = true;
                 for (Country country: countries) {
-                    boolean flag = country.isCompleted();
-                    if (flag) {
+                    if (country.isCompleted()) {
                         results.putIfAbsent(country.name, i);
                     }
-                    isCompleted = flag && isCompleted;
+                    else {
+                        isCompleted = false;
+                    }
                 }
                 i++;
             }
@@ -93,20 +94,23 @@ public class Placer {
             City city = entry.getValue();
             int x = pair.getValue0();
             int y = pair.getValue1();
-            for (int i = -1; i <= 1; i+=2){
-                Pair<Integer, Integer> cords = new Pair<>(x + i, y);
-                if (territory.containsKey(cords)){
-                    city.neighbours.add(territory.get(cords));
-                }
-                cords = new Pair<>(x, y + i);
-                if (territory.containsKey(cords)){
-                    city.neighbours.add(territory.get(cords));
-                }
-            }
+
+            List<Pair<Integer,Integer>> potentialNeighbours = new ArrayList<>();
+            Collections.addAll(potentialNeighbours,
+                    new Pair<>(x + 1, y),
+                    new Pair<>(x - 1, y),
+                    new Pair<>(x, y + 1),
+                    new Pair<>(x, y - 1)
+            );
+
+            potentialNeighbours.stream()
+                    .filter(territory::containsKey)
+                    .map(territory::get)
+                    .forEach(city.neighbours::add);
         }
         if(countries.size()>1){
             for (Country country:countries) {
-                if(!country.localCities.stream().map(x->x.neighbours).flatMap(x->x.stream()).anyMatch(x->!x.country.equals(country.name))){
+                if(country.localCities.stream().map(x->x.neighbours).flatMap(Collection::stream).allMatch(x-> x.country.equals(country.name))){
                     throw new IllegalArgumentException("Country " + country.name + " is not connected with others");
                 }
             }

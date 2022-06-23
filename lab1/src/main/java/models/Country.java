@@ -15,7 +15,8 @@ public class Country{
             throw new IllegalArgumentException("Insufficient number of parameters in country line");
         }
         if (args[0].length() > Constants.MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("Too long country name: limit 25 characters");
+            throw new IllegalArgumentException(
+                    String.format("Too long country name: limit %d characters", Constants.MAX_NAME_LENGTH));
         }
         int xl = Integer.parseInt(args[1]);
         int yl = Integer.parseInt(args[2]);
