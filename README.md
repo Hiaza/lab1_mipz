@@ -1,1 +1,1 @@
-# lab1_mipz
+# labs_mipz
